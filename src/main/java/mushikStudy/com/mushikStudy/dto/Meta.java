@@ -8,8 +8,10 @@ import lombok.Data;
 public class Meta {
     long pageNo;
     int pageSize;
+    double took;
 
-    public static Meta of(long pageNo, int pageSize) {
-        return new Meta(pageNo, pageSize);
+
+    public static Meta of(long pageNo, int pageSize, double took) {
+        return new Meta(pageNo, pageSize, took);
     }
 }

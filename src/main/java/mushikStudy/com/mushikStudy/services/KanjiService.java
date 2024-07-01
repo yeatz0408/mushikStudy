@@ -10,13 +10,12 @@ import mushikStudy.com.mushikStudy.util.FileUtil;
 import org.json.JSONObject;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StopWatch;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Log4j2
 @Service
@@ -27,6 +26,8 @@ public class KanjiService {
     private final Environment env;
 
     public KanjiResponse load(long pageNo, int pageSize) {
+        StopWatch watch = new StopWatch();
+        watch.start();
         String targetMaterial = FileUtil.loadFile(env, resourceLoader);
         int index = (int) pageNo * pageSize;
         int lastIndexOfPage = (int) pageNo * pageSize + pageSize;
@@ -47,6 +48,7 @@ public class KanjiService {
             JSONObject jsonObject = new JSONObject(response);
             body.add(KanjiElement.of(jsonObject, restTemplate));
         }
-        return new KanjiResponse(body, Meta.of(pageNo, pageSize));
+        watch.stop();
+        return new KanjiResponse(body, Meta.of(pageNo, pageSize, watch.getTotalTimeSeconds()));
     }
 }
