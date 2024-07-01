@@ -8,15 +8,11 @@ import mushikStudy.com.mushikStudy.dto.Meta;
 import mushikStudy.com.mushikStudy.dto.response.KanjiResponse;
 import mushikStudy.com.mushikStudy.util.FileUtil;
 import org.json.JSONObject;
-import org.springframework.core.io.Resource;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StreamUtils;
 import org.springframework.web.client.RestTemplate;
 
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,13 +20,12 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class KanjiService {
-
     private final RestTemplate restTemplate;
     private final ResourceLoader resourceLoader;
-
+    private final Environment env;
 
     public KanjiResponse load(long pageNo, int pageSize) {
-        String targetMaterial = FileUtil.loadFile(resourceLoader);
+        String targetMaterial = FileUtil.loadFile(env, resourceLoader);
         int index = (int) pageNo * pageSize;
         int lastIndexOfPage = (int) pageNo * pageSize + pageSize;
 
