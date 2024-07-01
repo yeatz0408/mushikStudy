@@ -37,7 +37,7 @@ public class KanjiElement {
         String kanji = json.getString(KanjiTerms.KANJI);
         List<String> onList = JsonUtil.extractList(onArray);
         List<String> kunList = JsonUtil.extractList(kunArray);
-        List<String> meaningList = JsonUtil.extractList(meaningArray).stream().map(s -> TranslateUtil.translate(s, restTemplate)).toList();
+        List<String> meaningList = JsonUtil.extractList(meaningArray).stream().limit(2).map(s -> TranslateUtil.translate(s, restTemplate)).toList();
 
         return new KanjiElement(kanji, onList, kunList, meaningList);
     }
