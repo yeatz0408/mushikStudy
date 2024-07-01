@@ -18,7 +18,7 @@ public class FileUtil {
             Resource resource = resourceLoader.getResource("file:" + fileName);
             byte[] fileBytes = StreamUtils.copyToByteArray(resource.getInputStream());
             log.info("File loaded");
-            return new String(fileBytes, StandardCharsets.UTF_8);
+            return new String(fileBytes, StandardCharsets.UTF_8).trim();
         } catch (Exception e) {
             log.error("Problem occurred while reading file : {}", e.getMessage());
             return null;

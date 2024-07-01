@@ -10,11 +10,13 @@ import mushikStudy.com.mushikStudy.util.FileUtil;
 import org.json.JSONObject;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Log4j2
 @Service
@@ -34,12 +36,16 @@ public class KanjiService {
             lastIndexOfPage = targetMaterial.length();
         }
 
+        if (pageSize > 50 || pageSize > targetMaterial.length()) {
+            pageSize = Math.min(targetMaterial.length(), 50);
+        }
+
         List<KanjiElement> body = new ArrayList<>();
         for (; index < lastIndexOfPage ; index++) {
             char kanji = targetMaterial.charAt(index);
             String response = restTemplate.getForObject(KanjiTerms.KanjiApi.KANJI_API_URL + kanji, String.class);
             JSONObject jsonObject = new JSONObject(response);
-            body.add(KanjiElement.of(jsonObject));
+            body.add(KanjiElement.of(jsonObject, restTemplate));
         }
         return new KanjiResponse(body, Meta.of(pageNo, pageSize));
     }
