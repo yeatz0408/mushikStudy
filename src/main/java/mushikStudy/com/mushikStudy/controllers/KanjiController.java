@@ -18,5 +18,4 @@ public class KanjiController {
     public KanjiResponse loadKanji(@RequestParam(name="pageNo") long pageNo, @RequestParam(name="pageSize") int pageSize) {
         return service.load(pageNo, pageSize);
     }
-
 }

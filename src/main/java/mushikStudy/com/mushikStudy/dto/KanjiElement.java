@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import mushikStudy.com.mushikStudy.constants.KanjiTerms;
-import mushikStudy.com.mushikStudy.dto.response.KanjiResponse;
 import mushikStudy.com.mushikStudy.util.JsonUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -18,8 +17,8 @@ import java.util.List;
 @NoArgsConstructor
 public class KanjiElement {
     String kanji;
-    List<String> kunYomi;
     List<String> onYomi;
+    List<String> kunYomi;
     List<String> meanings;
 
     public static KanjiElement of(JSONObject json) {
@@ -29,15 +28,15 @@ public class KanjiElement {
             return null;
         }
 
-        JSONArray kunArray = json.getJSONArray(KanjiTerms.KanjiApi.KUN_READINGS);
         JSONArray onArray = json.getJSONArray(KanjiTerms.KanjiApi.ON_READINGS);
+        JSONArray kunArray = json.getJSONArray(KanjiTerms.KanjiApi.KUN_READINGS);
         JSONArray meaningArray = json.getJSONArray(KanjiTerms.MEANINGS);
 
         String kanji = json.getString(KanjiTerms.KANJI);
-        List<String> kunList = JsonUtil.extractList(kunArray);
         List<String> onList = JsonUtil.extractList(onArray);
+        List<String> kunList = JsonUtil.extractList(kunArray);
         List<String> meaningList = JsonUtil.extractList(meaningArray);
 
-        return new KanjiElement(kanji, kunList, onList, meaningList);
+        return new KanjiElement(kanji, onList, kunList, meaningList);
     }
 }
