@@ -3,7 +3,9 @@ package mushikStudy.com.mushikStudy.services;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import mushikStudy.com.mushikStudy.constants.KanjiTerms;
+import mushikStudy.com.mushikStudy.dto.KanjiElement;
 import mushikStudy.com.mushikStudy.dto.response.KanjiResponse;
+import mushikStudy.com.mushikStudy.util.JsonUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
@@ -39,29 +41,10 @@ public class KanjiService {
         String response = restTemplate.getForObject(KanjiTerms.KanjiApi.KANJI_API_URL + kanji, String.class);
 
         JSONObject jsonObject = new JSONObject(response);
-        JSONArray kunArray = jsonObject.getJSONArray(KanjiTerms.KanjiApi.KUN_READINGS);
-        JSONArray onArray = jsonObject.getJSONArray(KanjiTerms.KanjiApi.ON_READINGS);
-        JSONArray meaningArray = jsonObject.getJSONArray(KanjiTerms.MEANINGS);
-
-        String kanjiToReturn = jsonObject.getString(KanjiTerms.KANJI);
-        List<String> kunList = extractList(kunArray);
-        List<String> onList = extractList(onArray);
-        List<String> meaningList = extractList(meaningArray);
+        KanjiElement element = KanjiElement.of(jsonObject);
 
         JSONObject forResponse = new JSONObject();
-        forResponse.put(KanjiTerms.KANJI, kanjiToReturn);
-        forResponse.put(KanjiTerms.KUNYOMI, kunList);
-        forResponse.put(KanjiTerms.ONYOMI, onList);
-        forResponse.put(KanjiTerms.MEANINGS, meaningList);
-
         KanjiResponse res = new KanjiResponse(pageNo, pageSize, forResponse.toString());
         return res;
     }
-    private List<String> extractList(JSONArray jsonArray) {
-        return IntStream.range(0, jsonArray.length())
-                .mapToObj(jsonArray::getString)
-                .collect(Collectors.toList());
-    }
-
-
 }
