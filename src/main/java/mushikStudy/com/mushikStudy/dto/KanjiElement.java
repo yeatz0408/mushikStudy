@@ -11,6 +11,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -37,7 +38,7 @@ public class KanjiElement {
         String kanji = json.getString(KanjiTerms.KANJI);
         List<String> onList = JsonUtil.extractList(onArray);
         List<String> kunList = JsonUtil.extractList(kunArray);
-        List<String> meaningList = JsonUtil.extractList(meaningArray).stream().limit(2).map(s -> TranslateUtil.translate(s, restTemplate)).toList();
+        List<String> meaningList = kunList.stream().limit(1).map(s -> TranslateUtil.translate(TranslateUtil.convertKunYomi(s, kanji), restTemplate)).toList();
 
         return new KanjiElement(kanji, onList, kunList, meaningList);
     }
