@@ -22,7 +22,7 @@ public class KanjiController {
 
     @GetMapping(ApiV1.LOAD_KANJI_RANDOM)
     public ResponseEntity<KanjiResponse> loadRandomKanji(@RequestParam(name="pageSize") int pageSize) {
-        return null;
+        return ResponseEntity.ok(service.loadRandom(pageSize));
     }
 
 

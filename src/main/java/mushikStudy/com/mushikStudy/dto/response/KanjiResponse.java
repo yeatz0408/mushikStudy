@@ -12,4 +12,8 @@ import java.util.List;
 public class KanjiResponse {
     List<KanjiElement> body;
     Meta meta;
+
+    public KanjiResponse(List<KanjiElement> body) {
+        this.body = body;
+    }
 }
