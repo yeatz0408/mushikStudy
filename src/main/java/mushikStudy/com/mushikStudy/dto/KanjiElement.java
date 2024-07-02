@@ -14,6 +14,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 
 @Data
 @Log4j2
@@ -25,7 +27,7 @@ public class KanjiElement {
     List<String> kunYomi;
     List<String> meanings;
 
-    public static KanjiElement of(JSONObject json, RestTemplate restTemplate) {
+    public static KanjiElement of(JSONObject json, RestTemplate restTemplate, ExecutorService executorService) {
 
         if (!json.has(KanjiTerms.KANJI) || !json.has(KanjiTerms.KanjiApi.KUN_READINGS) || !json.has(KanjiTerms.KanjiApi.ON_READINGS) || !json.has(KanjiTerms.MEANINGS)) {
             log.error("Wrong json format.");
@@ -34,17 +36,30 @@ public class KanjiElement {
 
         JSONArray onArray = json.getJSONArray(KanjiTerms.KanjiApi.ON_READINGS);
         JSONArray kunArray = json.getJSONArray(KanjiTerms.KanjiApi.KUN_READINGS);
-        JSONArray meaningArray = json.getJSONArray(KanjiTerms.MEANINGS);
+//        JSONArray meaningArray = json.getJSONArray(KanjiTerms.MEANINGS);
 
         String kanji = json.getString(KanjiTerms.KANJI);
         List<String> onList = JsonUtil.extractList(onArray);
         List<String> kunList = JsonUtil.extractList(kunArray);
 
-        List<String> meaningList = new ArrayList<>();
-        meaningList.add(TranslateUtil.translate(TranslateUtil.convertKunYomi(kunList.get(0), kanji), LanguageSetter.of(Lang.Japanese, Lang.Korean), restTemplate));
-        meaningList.add(TranslateUtil.translate(kanji, LanguageSetter.of(Lang.Japanese, Lang.Korean), restTemplate));
-        meaningList.add(TranslateUtil.translate(meaningArray.get(0).toString(), LanguageSetter.of(Lang.Japanese, Lang.Korean), restTemplate));
-        meaningList = meaningList.stream().distinct().toList();
+        List<String> targetKanjis = new ArrayList<>();
+        if (!kunArray.isEmpty()) {
+            targetKanjis.add(TranslateUtil.convertKunYomi(kunList.get(0), kanji));
+        }
+        targetKanjis.add(kanji);
+
+        List<String> meaningList = targetKanjis.stream().parallel().map(s ->
+                TranslateUtil.translate(s, LanguageSetter.of(Lang.Japanese, Lang.Korean), restTemplate)).toList();
+
+//        List<CompletableFuture<String>> futures = meaningList.stream().map(m -> CompletableFuture.supplyAsync(() ->
+//                TranslateUtil.translate(m, LanguageSetter.of(Lang.Japanese, Lang.Korean), restTemplate), executorService)).toList();
+//        meaningList = futures.stream().map(CompletableFuture::join).toList();
+//        meaningList = meaningList.stream().distinct().toList();
+
+//        meaningList.add(TranslateUtil.translate(TranslateUtil.convertKunYomi(kunList.get(0), kanji), LanguageSetter.of(Lang.Japanese, Lang.Korean), restTemplate));
+//        meaningList.add(TranslateUtil.translate(kanji, LanguageSetter.of(Lang.Japanese, Lang.Korean), restTemplate));
+//        meaningList.add(TranslateUtil.translate(meaningArray.get(0).toString(), LanguageSetter.of(Lang.Japanese, Lang.Korean), restTemplate));
+
 //        meaningList.add(TranslateUtil.translate(kanji, restTemplate));
 //        meaningList.add(TranslateUtil.translate(TranslateUtil.convertKunYomi(kunList.get(0), kanji), restTemplate));
 //        meaningList = kunList.stream().limit(2).map(s -> TranslateUtil.translate(TranslateUtil.convertKunYomi(s, kanji), restTemplate)).toList();
