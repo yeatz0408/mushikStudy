@@ -34,17 +34,11 @@ public class KanjiService {
     public KanjiResponse load(long pageNo, int pageSize) {
         StopWatch watch = new StopWatch();
         watch.start();
-        int index = (int) pageNo * pageSize;
-        int lastIndexOfPage = (int) pageNo * pageSize + pageSize;
 
-        if (lastIndexOfPage > targetMaterial.length()) {
-            index = targetMaterial.length() - pageSize;
-            lastIndexOfPage = targetMaterial.length();
-        }
+        pageSize = Math.min(Math.min(pageSize, 50), targetMaterial.length());
+        int index = Math.max((int) pageNo * pageSize, 0);
+        int lastIndexOfPage = Math.min(index + pageSize, targetMaterial.length());
 
-        if (pageSize > 50 || pageSize > targetMaterial.length()) {
-            pageSize = Math.min(targetMaterial.length(), 50);
-        }
         List<String> targetKanjis = new ArrayList<>();
         for (; index < lastIndexOfPage ; index++) {
             targetKanjis.add(String.valueOf(targetMaterial.charAt(index)));
