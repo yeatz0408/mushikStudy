@@ -7,6 +7,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.util.StreamUtils;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 @Log4j2
@@ -22,6 +25,16 @@ public class FileUtil {
         } catch (Exception e) {
             log.error("Problem occurred while reading file : {}", e.getMessage());
             return null;
+        }
+    }
+    public static boolean writeFile(Environment env, String terms) {
+        String fileName = env.getProperty("project.file.path");
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("file:" + fileName))) {
+            writer.write(terms);
+            return true;
+        } catch (IOException e) {
+            log.error("Problem occurred while writing file: {}", e.getMessage());
+            return false;
         }
     }
 }
