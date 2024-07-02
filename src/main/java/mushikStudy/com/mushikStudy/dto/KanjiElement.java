@@ -35,11 +35,12 @@ public class KanjiElement {
 
         JSONArray onArray = json.getJSONArray(KanjiTerms.KanjiApi.ON_READINGS);
         JSONArray kunArray = json.getJSONArray(KanjiTerms.KanjiApi.KUN_READINGS);
-//        JSONArray meaningArray = json.getJSONArray(KanjiTerms.MEANINGS);
+        JSONArray meaningArray = json.getJSONArray(KanjiTerms.MEANINGS);
 
         String kanji = json.getString(KanjiTerms.KANJI);
         List<String> onList = JsonUtil.extractList(onArray);
         List<String> kunList = JsonUtil.extractList(kunArray);
+        List<String> meaningList = JsonUtil.extractList(meaningArray);
 
         List<String> meaningsTemp = new ArrayList<>();
         if (!kunArray.isEmpty()) {
@@ -47,9 +48,9 @@ public class KanjiElement {
         }
         meaningsTemp.add(kanji);
 
-        List<String> meaningList = meaningsTemp.stream().parallel().map(s ->
-                TranslateUtil.translate(s, LanguageSetter.of(Lang.Japanese, Lang.Korean), restTemplate)).toList();
-        meaningList = meaningList.stream().distinct().toList();
+//        List<String> meaningList = meaningsTemp.stream().parallel().map(s ->
+//                TranslateUtil.translate(s, LanguageSetter.of(Lang.Japanese, Lang.Korean), restTemplate)).toList();
+//        meaningList = meaningList.stream().distinct().toList();
 
         return new KanjiElement(kanji, onList, kunList, meaningList);
     }
