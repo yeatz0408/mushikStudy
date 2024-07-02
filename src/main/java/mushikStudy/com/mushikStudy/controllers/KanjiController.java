@@ -19,4 +19,41 @@ public class KanjiController {
     public ResponseEntity<KanjiResponse> loadKanji(@RequestParam(name="pageNo") long pageNo, @RequestParam(name="pageSize") int pageSize) {
         return ResponseEntity.ok(service.load(pageNo, pageSize));
     }
+
+    @GetMapping(ApiV1.LOAD_KANJI_RANDOM)
+    public ResponseEntity<KanjiResponse> loadRandomKanji(@RequestParam(name="pageSize") int pageSize) {
+        return null;
+    }
+
+
+    @GetMapping(ApiV1.ADD_KANJI)
+    public ResponseEntity<String> addKanji(@RequestParam(name="kanjis") String kanjis, @RequestParam(name="index") int index) {
+        return null;
+    }
+
+    @GetMapping(ApiV1.ADD_KANJI_PUSH)
+    public ResponseEntity<String> pushKanji(@RequestParam(name="kanjis") String kanjis) {
+        return null;
+    }
+
+    @GetMapping(ApiV1.ADD_KANJI_REAR)
+    public ResponseEntity<String> pushKanjiRear(@RequestParam(name="kanjis") String kanjis) {
+        return null;
+    }
+
+
+    @GetMapping(ApiV1.DELETE_KANJI)
+    public ResponseEntity<String> deleteKanji(@RequestParam(name="kanjis") String kanjis) {
+        return null;
+    }
+
+    @GetMapping(ApiV1.DELETE_KANJI_FRONT)
+    public ResponseEntity<String> deleteKanjiFront() {
+        return null;
+    }
+
+    @GetMapping(ApiV1.DELETE_KANJI_REAR)
+    public ResponseEntity<String> deleteKanjiRear() {
+        return null;
+    }
 }
