@@ -24,9 +24,9 @@ public class KanjiService {
     private final RestTemplate restTemplate;
     private final ResourceLoader resourceLoader;
     private final Environment env;
+    StopWatch watch = new StopWatch();
 
     public KanjiResponse load(long pageNo, int pageSize) {
-        StopWatch watch = new StopWatch();
         watch.start();
         String targetMaterial = FileUtil.loadFile(env, resourceLoader);
         int index = (int) pageNo * pageSize;

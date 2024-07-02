@@ -6,8 +6,10 @@ public class KanjiTerms {
         public static final String KANJI_API_URL = "https://kanjiapi.dev/v1/kanji/";
         public static final String TRANSLATION_API_URL_PREFIX = "https://api.mymemory.translated.net/get?q=";
         public static final String TRANSLATION_API_URL_SUFFIX = "&langpair=ja|ko";
+        public static final String LANGPAIR = "langpair";
         public static final String KUN_READINGS = "kun_readings";
         public static final String ON_READINGS = "on_readings";
+        public static final String TRANSLATED_TEXT = "translatedText";
         private KanjiApi() {
         }
     }

@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import mushikStudy.com.mushikStudy.constants.KanjiTerms;
+import mushikStudy.com.mushikStudy.constants.enums.Lang;
 import mushikStudy.com.mushikStudy.util.JsonUtil;
 import mushikStudy.com.mushikStudy.util.TranslateUtil;
 import org.json.JSONArray;
@@ -38,9 +39,11 @@ public class KanjiElement {
         String kanji = json.getString(KanjiTerms.KANJI);
         List<String> onList = JsonUtil.extractList(onArray);
         List<String> kunList = JsonUtil.extractList(kunArray);
+
         List<String> meaningList = new ArrayList<>();
-        meaningList.addAll(kunList.stream().limit(2).map(s -> TranslateUtil.translate(TranslateUtil.convertKunYomi(s, kanji), restTemplate)).toList());
-        meaningList.add(TranslateUtil.translate(kanji, restTemplate));
+        meaningList.add(TranslateUtil.translate(TranslateUtil.convertKunYomi(kunList.get(0), kanji), LanguageSetter.of(Lang.Japanese, Lang.Korean), restTemplate));
+        meaningList.add(TranslateUtil.translate(kanji, LanguageSetter.of(Lang.Japanese, Lang.Korean), restTemplate));
+        meaningList.add(TranslateUtil.translate(meaningArray.get(0).toString(), LanguageSetter.of(Lang.Japanese, Lang.Korean), restTemplate));
         meaningList = meaningList.stream().distinct().toList();
 //        meaningList.add(TranslateUtil.translate(kanji, restTemplate));
 //        meaningList.add(TranslateUtil.translate(TranslateUtil.convertKunYomi(kunList.get(0), kanji), restTemplate));
