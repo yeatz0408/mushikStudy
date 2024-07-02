@@ -29,7 +29,7 @@ public class FileUtil {
     }
     public static boolean writeFile(Environment env, String terms) {
         String fileName = env.getProperty("project.file.path");
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("file:" + fileName))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             writer.write(terms);
             return true;
         } catch (IOException e) {

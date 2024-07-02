@@ -7,6 +7,10 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 @Component
 public class KanjiRepository {
 
@@ -31,7 +35,9 @@ public class KanjiRepository {
         if (index < 0 || index > data.length()) {
             throw new IndexOutOfBoundsException("Index is out of bounds");
         }
+
         StringBuilder sb = new StringBuilder(data);
+        terms = FormatUtil.removeDuplicates(FormatUtil.removeDuplicates(terms), data);
         sb.insert(index, terms);
 
         if (FileUtil.writeFile(env, sb.toString())) {

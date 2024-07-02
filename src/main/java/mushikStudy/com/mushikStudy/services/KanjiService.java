@@ -42,7 +42,7 @@ public class KanjiService {
         }
         List<KanjiElement> elements = load(terms);
         watch.stop();
-        return new KanjiResponse(elements, Meta.of(pageNo, pageSize, watch.getTotalTimeSeconds()));
+        return new KanjiResponse(elements, Meta.of(pageNo, pageSize, targetMaterial.length(), watch.getTotalTimeSeconds()));
     }
 
     public KanjiResponse loadRandom(int pageSize) {
@@ -53,7 +53,7 @@ public class KanjiService {
         List<String> terms = extractUniqueCharacters(targetMaterial, pageSize);
         List<KanjiElement> elements = load(terms);
         watch.stop();
-        return new KanjiResponse(elements, Meta.of(-1, pageSize, watch.getTotalTimeSeconds()));
+        return new KanjiResponse(elements, Meta.of(-1, pageSize, targetMaterial.length(), watch.getTotalTimeSeconds()));
     }
     private List<String> extractUniqueCharacters(String target, int pageSize) {
         String targetMaterial = repository.load();

@@ -30,4 +30,13 @@ public class FormatUtil {
         }
         return new String(result);
     }
+    public String removeDuplicates(String terms, String wholeText) {
+        StringBuilder filteredTerms = new StringBuilder();
+        for (char termChar : terms.toCharArray()) {
+            if (wholeText.indexOf(termChar) == -1) {
+                filteredTerms.append(termChar);
+            }
+        }
+        return filteredTerms.toString();
+    }
 }
