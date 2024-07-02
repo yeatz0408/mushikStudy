@@ -1,6 +1,5 @@
 package mushikStudy.com.mushikStudy.services;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import mushikStudy.com.mushikStudy.constants.KanjiTerms;
 import mushikStudy.com.mushikStudy.dto.KanjiElement;
@@ -16,11 +15,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Log4j2
 @Service
@@ -35,13 +29,11 @@ public class KanjiService {
         this.resourceLoader = resourceLoader;
         this.env = env;
         this.targetMaterial = FileUtil.loadFile(env, resourceLoader);
-
     }
 
     public KanjiResponse load(long pageNo, int pageSize) {
         StopWatch watch = new StopWatch();
         watch.start();
-        ExecutorService executorService = Executors.newFixedThreadPool(50);
         int index = (int) pageNo * pageSize;
         int lastIndexOfPage = (int) pageNo * pageSize + pageSize;
 
@@ -57,16 +49,10 @@ public class KanjiService {
         for (; index < lastIndexOfPage ; index++) {
             targetKanjis.add(String.valueOf(targetMaterial.charAt(index)));
         }
-        List<CompletableFuture<String>> futures = targetKanjis.stream().map(
-                s -> CompletableFuture.supplyAsync(
-                        () -> restTemplate.getForObject(KanjiTerms.KanjiApi.KANJI_API_URL + s, String.class), executorService))
-                .toList();
-        List<String> results = futures.stream()
-                .map(CompletableFuture::join)
-                .toList();
-        List<KanjiElement> body = results.stream().parallel().map(s -> KanjiElement.of(new JSONObject(s), restTemplate, executorService)).toList();
 
-        executorService.shutdown();
+        List<String> responses = targetKanjis.stream().parallel().map(k -> restTemplate.getForObject(KanjiTerms.KanjiApi.KANJI_API_URL + k, String.class)).toList();
+        List<KanjiElement> body = responses.stream().parallel().map(s -> KanjiElement.of(new JSONObject(s), restTemplate)).toList();
+
         watch.stop();
         return new KanjiResponse(body, Meta.of(pageNo, pageSize, watch.getTotalTimeSeconds()));
     }
